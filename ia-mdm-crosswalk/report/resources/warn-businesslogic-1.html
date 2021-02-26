@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title>Mule Migratiol Assistant Report</title>
+    <link rel="stylesheet" type="text/css" href="../assets/styles/mulesoft-styles.css">
+    <link rel="stylesheet" type="text/css" href="../assets/styles/tsorter.css">
+</head>
+<body>
+    <div class="mulesoft-topbar">
+        <div class="mulesoft-appbar">
+            <div class="muleicon muleicon-logo"></div>
+            <div class="anypoint-brand">Mule Migration Assistant 1.0.0</div>
+        </div>
+    </div>
+    <div class="col-md-2 col-md-offset-1 sidemenu">
+        <ul class="sidemenu-back">
+            <li><a href="../summary.html">Summary</a></li>
+        </ul>
+    </div>
+    <div class="col-md-8">
+        <h2 class="text-bold">Issues found on: <span class="text-italic text-normal">businesslogic.xml</span></h2>
+        <h4 class="text-bold">Description: <span class="text-italic text-normal">Instead of using session variables in the flow, use variables.</span></h4>
+        <h4 class="text-bold">Documentation: </h4>
+            <h4><a href="https://github.com/mulesoft/mule-migration-assistant/blob/master/docs/user-docs/migration-tool-post-mig.adoc#session_variables">https://github.com/mulesoft/mule-migration-assistant/blob/master/docs/user-docs/migration-tool-post-mig.adoc#session_variables</a></h4>
+        <hr>
+        <br>
+            <div class="col-md-12">
+                <h4 class="text-bold">
+                    Line: <span class="text-italic text-normal">68</span>&nbsp;
+                    Column: <span class="text-italic text-normal">177</span>
+                </h4>
+                <br>
+                <pre>&lt;set-session-variable variableName=&quot;whereClause&quot; value=&quot;#[&apos;WHERE &apos; ++ vars.whereClause]&quot; mimeType=&quot;text/plain&quot; doc:name=&quot;Set Where Params Clause&quot; /&gt;</pre>
+                <hr>
+            </div>
+            <div class="col-md-12">
+                <h4 class="text-bold">
+                    Line: <span class="text-italic text-normal">15</span>&nbsp;
+                    Column: <span class="text-italic text-normal">186</span>
+                </h4>
+                <br>
+                <pre>&lt;set-session-variable variableName=&quot;xWalkFields&quot; value=&quot;guid, contact_id, last_modified_date, source_org_id&quot; mimeType=&quot;text/plain&quot; doc:name=&quot;Set Query Fields Var&quot; /&gt;</pre>
+                <hr>
+            </div>
+            <div class="col-md-12">
+                <h4 class="text-bold">
+                    Line: <span class="text-italic text-normal">41</span>&nbsp;
+                    Column: <span class="text-italic text-normal">200</span>
+                </h4>
+                <br>
+                <pre>&lt;set-session-variable variableName=&quot;whereClause&quot; value=&quot;#[&apos;WHERE contact_id =\&apos;&apos; ++ sessionVars.contactId ++ &apos;\&apos;&apos;]&quot; mimeType=&quot;text/plain&quot; doc:name=&quot;Set Where ID Clause&quot; /&gt;</pre>
+                <hr>
+            </div>
+    </div>
+</body>
+</html>

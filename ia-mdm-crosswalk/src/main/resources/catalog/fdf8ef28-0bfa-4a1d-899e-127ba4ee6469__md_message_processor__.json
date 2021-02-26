@@ -1,0 +1,17 @@
+{
+    "inputMessageMetadata": {},
+    "outputMessageMetadata": {
+        "messagePayload": {
+            "connectorName": "#_custom_mule_metadata_type_#",
+            "typeId": "upsertResults"
+        },
+        "flowVariables": {
+            "errorMessage": {
+                "connectorName": "#_custom_mule_metadata_type_#",
+                "typeId": "errorJSON"
+            }
+        }
+    },
+    "id": "fdf8ef28-0bfa-4a1d-899e-127ba4ee6469",
+    "version": "5.2.0.0"
+}

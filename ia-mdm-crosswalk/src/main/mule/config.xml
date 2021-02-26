@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mule
+	xmlns:validation="http://www.mulesoft.org/schema/mule/validation"
+	xmlns="http://www.mulesoft.org/schema/mule/core"
+	xmlns:api-gateway="http://www.mulesoft.org/schema/mule/api-gateway"
+	xmlns:apikit="http://www.mulesoft.org/schema/mule/mule-apikit"
+	xmlns:db="http://www.mulesoft.org/schema/mule/db"
+	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
+	xmlns:os="http://www.mulesoft.org/schema/mule/os"
+	xmlns:salesforce="http://www.mulesoft.org/schema/mule/salesforce"
+	xmlns:secure-properties="http://www.mulesoft.org/schema/mule/secure-properties"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="
+http://www.mulesoft.org/schema/mule/validation http://www.mulesoft.org/schema/mule/validation/current/mule-validation.xsd 
+http://www.mulesoft.org/schema/mule/mule-apikit http://www.mulesoft.org/schema/mule/mule-apikit/current/mule-apikit.xsd http://www.mulesoft.org/schema/mule/db http://www.mulesoft.org/schema/mule/db/current/mule-db.xsd http://www.mulesoft.org/schema/mule/api-gateway http://www.mulesoft.org/schema/mule/api-gateway/current/mule-api-gateway.xsd http://www.mulesoft.org/schema/mule/secure-properties http://www.mulesoft.org/schema/mule/secure-properties/current/mule-secure-properties.xsd http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd http://www.mulesoft.org/schema/mule/salesforce http://www.mulesoft.org/schema/mule/salesforce/current/mule-salesforce.xsd http://www.mulesoft.org/schema/mule/os http://www.mulesoft.org/schema/mule/os/current/mule-os.xsd">
+	
+	<import doc:name="CommonUtils"
+		doc:id="f87b75fa-393a-411c-a749-57b4d32b6ca0" file="common-utils.xml" />
+	<import doc:name="CommonError"
+		doc:id="10e19b99-8fa5-4c14-a408-7ed645dc2eed" file="common-error.xml" />
+	<api-gateway:autodiscovery
+		flowRef="asu-sf-xwalk-main" doc:name="API Autodiscovery"
+		apiId="86753099" ignoreBasePath="true" />
+	<apikit:config name="asu-sf-xwalk-config"
+		raml="asu-sf-xwalk.raml" outboundHeadersMapName="outboundHeaders"
+		httpStatusVarName="httpStatus" doc:name="Router" />
+	<salesforce:sfdc-config
+		name="Salesforce__EdPlus" doc:name="Salesforce Config">
+		<salesforce:basic-connection
+			username="${secure::asu.edplus.api.user}"
+			password="${secure::asu.edplus.api.password}"
+			securityToken="${secure::asu.edplus.api.token}"
+			url="${secure::sf.url}" >
+			<reconnection >
+				<reconnect frequency="3000" count="5" />
+			</reconnection>
+		</salesforce:basic-connection>
+	</salesforce:sfdc-config>
+	<salesforce:sfdc-config
+		name="Salesforce__Enterprise" doc:name="Salesforce Config"
+		doc:id="295c32ef-e997-4ad4-b1af-f04b99d49383">
+		<salesforce:basic-connection
+			username="${secure::asu.sf.api.user}"
+			password="${secure::asu.sf.api.password}"
+			securityToken="${secure::asu.sf.api.token}" url="${secure::sf.url}" >
+			<reconnection >
+				<reconnect frequency="3000" count="5" />
+			</reconnection>
+		</salesforce:basic-connection>
+	</salesforce:sfdc-config>
+	<secure-properties:config
+		name="Secure_Property_Placeholder" doc:name="Secure Properties Config"
+		doc:id="f8c63155-325e-4591-b08b-19f855a134ae"
+		file="asu-sf-mdm-xwalk.properties" key="${asu-sf-mdm-xwalk.password}">
+		<secure-properties:encrypt
+			algorithm="Blowfish" />
+	</secure-properties:config>
+	<os:object-store name="watermarkStore"
+		persistent="true" />
+	<validation:config name="Validation_Config"
+		doc:name="Validation Config"
+		doc:id="88da0d6c-21f3-49af-be85-e8d7ea8d4666" />
+			<db:config name="Database_Config" doc:name="Database Config" doc:id="596040f5-b5f4-451f-9861-4ca1989bcaff" >
+		<db:generic-connection url="jdbc:postgresql://${secure::heroku.postgresSql.host}:${secure::heroku.postgresSql.port}/${secure::heroku.postgresSql.database}?user=${secure::heroku.postgresSql.user}&amp;password=${secure::heroku.postgresSql.password}&amp;sslmode=require" driverClassName="org.postgresql.Driver" />
+	</db:config>
+</mule>

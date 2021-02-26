@@ -1,0 +1,76 @@
+#%RAML 1.0
+title: Salesforce MDM Crosswalk API
+version: v1
+protocols: [ HTTPS ]
+baseUri: https://esb.asu.edu/api/{version}/asu-sf-mdm-xwalk/
+securedBy: [basic]
+securitySchemes:
+  basic:
+    description: |
+      This API supports Basic Authentication.
+    type: Basic Authentication
+
+types: 
+  xwalkGet:             !include schema/xwalkGetSchema.json
+  error:                !include types/error.raml
+
+traits:
+  client-credentials:
+      headers:
+        Authorization:
+          required: true
+          displayName: clientCredentials
+          description: This would hold the credentials in basic auth format
+
+/xwalk:
+  displayName: Xwalk
+  description: |
+    Working with Crosswalk object:
+    * Search Matching for existing crosswalk records
+  get:
+    description: |
+      Search/Match for Crosswalk.
+    queryParameters:
+      guid:
+        displayName: MDM GUID
+        type: string
+        required: true
+        maxLength: 40
+      sourceOrgId:
+        displayName: Source System Org ID
+        type: string
+        required: false
+        maxLength: 18
+         
+    responses:
+      200:
+        body:
+          application/json:
+            type: xwalkGet
+            example: !include ./examples/xwalkGetRecordByParams.json
+   
+  /{id}:
+    displayName: Contact Id
+    uriParameters:
+      id:
+        type: string
+        example: 003d000001iHNxoAAG
+        description: Represents the Contact Id
+    get:
+      description: Get Crosswalk Entry by Contact Id
+      responses:
+        200:
+          body:
+            application/json:
+              type: xwalkGet
+              example: !include ./examples/xwalkGetRecordById.json
+
+/ping:
+  description: Used to validate service endpoint is deployed and responding
+  get:
+    responses:
+      200:
+        body:
+          application/json:
+            example: |
+              {"response": "ping ok"}

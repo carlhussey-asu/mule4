@@ -1,0 +1,17 @@
+{
+    "inputMessageMetadata": {},
+    "outputMessageMetadata": {
+        "flowVariables": {
+            "whereClause": {
+                "connectorName": "#_custom_mule_metadata_type_#",
+                "typeId": "string"
+            },
+            "queryParamSize": {
+                "connectorName": "#_custom_mule_metadata_type_#",
+                "typeId": "int"
+            }
+        }
+    },
+    "id": "4624377a-37c0-4102-9996-1d2155a5d81e",
+    "version": "5.2.0.0"
+}

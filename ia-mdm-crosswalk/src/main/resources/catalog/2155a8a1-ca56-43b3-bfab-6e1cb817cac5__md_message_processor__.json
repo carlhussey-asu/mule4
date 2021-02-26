@@ -1,0 +1,13 @@
+{
+    "inputMessageMetadata": {},
+    "outputMessageMetadata": {
+        "sessionVariables": {
+            "xwalkFields": {
+                "connectorName": "#_custom_mule_metadata_type_#",
+                "typeId": "string"
+            }
+        }
+    },
+    "id": "2155a8a1-ca56-43b3-bfab-6e1cb817cac5",
+    "version": "5.2.0.0"
+}

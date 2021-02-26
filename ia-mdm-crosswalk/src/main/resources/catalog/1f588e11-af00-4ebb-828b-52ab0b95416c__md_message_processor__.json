@@ -1,0 +1,25 @@
+{
+    "inputMessageMetadata": {
+        "messagePayload": {
+            "connectorName": "#_custom_mule_metadata_type_#",
+            "typeId": "upsertInboundPayload"
+        }
+    },
+    "outputMessageMetadata": {
+        "flowVariables": {
+            "inboundParams": {
+                "model": {
+                    "connectorName": "#_custom_mule_metadata_type_#",
+                    "typeId": "upsertInboundPayload"
+                },
+                "isArray": false,
+                "dataType": "LIST",
+                "metaDataModelPropertiesManager": {
+                    "properties": []
+                }
+            }
+        }
+    },
+    "id": "1f588e11-af00-4ebb-828b-52ab0b95416c",
+    "version": "5.2.0.0"
+}

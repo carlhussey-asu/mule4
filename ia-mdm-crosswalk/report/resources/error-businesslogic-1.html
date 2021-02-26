@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title>Mule Migratiol Assistant Report</title>
+    <link rel="stylesheet" type="text/css" href="../assets/styles/mulesoft-styles.css">
+    <link rel="stylesheet" type="text/css" href="../assets/styles/tsorter.css">
+</head>
+<body>
+    <div class="mulesoft-topbar">
+        <div class="mulesoft-appbar">
+            <div class="muleicon muleicon-logo"></div>
+            <div class="anypoint-brand">Mule Migration Assistant 1.0.0</div>
+        </div>
+    </div>
+    <div class="col-md-2 col-md-offset-1 sidemenu">
+        <ul class="sidemenu-back">
+            <li><a href="../summary.html">Summary</a></li>
+        </ul>
+    </div>
+    <div class="col-md-8">
+        <h2 class="text-bold">Issues found on: <span class="text-italic text-normal">businesslogic.xml</span></h2>
+        <h4 class="text-bold">Description: <span class="text-italic text-normal">Custom types defined in Studio 6 are not migrated to Studio 7.</span></h4>
+        <h4 class="text-bold">Documentation: </h4>
+        <hr>
+        <br>
+            <div class="col-md-12">
+                <h4 class="text-bold">
+                    Line: <span class="text-italic text-normal">108</span>&nbsp;
+                    Column: <span class="text-italic text-normal">62</span>
+                </h4>
+                <br>
+                <pre>&lt;dw:transform-message doc:name=&quot;Prepare JSON Result&quot; metadata:id=&quot;fb953e67-a2d3-42f7-b1b3-9f7875cc3392&quot;&gt;
+    &lt;dw:set-payload resource=&quot;classpath:transformations/prepareJsonOutput.dwl&quot; /&gt;
+&lt;/dw:transform-message&gt;</pre>
+                <hr>
+            </div>
+            <div class="col-md-12">
+                <h4 class="text-bold">
+                    Line: <span class="text-italic text-normal">61</span>&nbsp;
+                    Column: <span class="text-italic text-normal">62</span>
+                </h4>
+                <br>
+                <pre>&lt;dw:transform-message doc:name=&quot;Create Where Clause&quot; metadata:id=&quot;4624377a-37c0-4102-9996-1d2155a5d81e&quot;&gt;
+    &lt;dw:set-variable resource=&quot;classpath:transformations/createWhereClauseInboundParams.dwl&quot; variableName=&quot;whereClause&quot; /&gt;
+&lt;/dw:transform-message&gt;</pre>
+                <hr>
+            </div>
+    </div>
+</body>
+</html>

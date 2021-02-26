@@ -1,0 +1,13 @@
+{
+    "inputMessageMetadata": {},
+    "outputMessageMetadata": {
+        "sessionVariables": {
+            "targetOrg": {
+                "connectorName": "#_custom_mule_metadata_type_#",
+                "typeId": "string"
+            }
+        }
+    },
+    "id": "c508a35e-4de0-43e1-bb47-90f178d646eb",
+    "version": "5.2.0.0"
+}

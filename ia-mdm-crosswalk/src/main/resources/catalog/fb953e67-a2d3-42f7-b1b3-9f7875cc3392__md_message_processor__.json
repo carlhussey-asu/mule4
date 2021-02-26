@@ -1,0 +1,11 @@
+{
+    "inputMessageMetadata": {},
+    "outputMessageMetadata": {
+        "messagePayload": {
+            "connectorName": "#_custom_mule_metadata_type_#",
+            "typeId": "xwalkResult"
+        }
+    },
+    "id": "fb953e67-a2d3-42f7-b1b3-9f7875cc3392",
+    "version": "5.2.0.0"
+}

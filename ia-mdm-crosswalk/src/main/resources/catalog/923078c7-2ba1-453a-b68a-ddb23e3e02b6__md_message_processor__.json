@@ -1,0 +1,13 @@
+{
+    "inputMessageMetadata": {
+        "messagePayload": {}
+    },
+    "outputMessageMetadata": {
+        "messagePayload": {
+            "connectorName": "CarlSandboxAuthentication",
+            "typeId": "MDM_Guid_Crosswalk__c"
+        }
+    },
+    "id": "923078c7-2ba1-453a-b68a-ddb23e3e02b6",
+    "version": "5.2.0.0"
+}

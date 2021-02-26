@@ -1,0 +1,10 @@
+{
+    "inputMessageMetadata": {},
+    "outputMessageMetadata": {
+        "sessionVariables": {
+            "validTargets": {}
+        }
+    },
+    "id": "5f8840e7-a746-4f09-9c40-8882deec2c95",
+    "version": "5.2.0.0"
+}

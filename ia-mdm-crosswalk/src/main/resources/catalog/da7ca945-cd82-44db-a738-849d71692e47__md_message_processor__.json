@@ -1,0 +1,10 @@
+{
+    "inputMessageMetadata": {},
+    "outputMessageMetadata": {
+        "flowVariables": {
+            "invalidQueryParam": {}
+        }
+    },
+    "id": "da7ca945-cd82-44db-a738-849d71692e47",
+    "version": "5.2.0.0"
+}

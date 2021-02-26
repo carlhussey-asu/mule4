@@ -1,0 +1,32 @@
+{
+    "inputMessageMetadata": {
+        "messagePayload": {
+            "model": {
+                "connectorName": "Salesforce__Basic_Authentication",
+                "typeId": "Contact"
+            },
+            "isArray": false,
+            "dataType": "LIST",
+            "metaDataModelPropertiesManager": {
+                "properties": []
+            }
+        }
+    },
+    "outputMessageMetadata": {
+        "flowVariables": {
+            "contacts": {
+                "model": {
+                    "connectorName": "Salesforce__Basic_Authentication",
+                    "typeId": "Contact"
+                },
+                "isArray": false,
+                "dataType": "LIST",
+                "metaDataModelPropertiesManager": {
+                    "properties": []
+                }
+            }
+        }
+    },
+    "id": "77d45df7-8a28-47f2-b4d9-b64cbdc82797",
+    "version": "5.2.0.0"
+}

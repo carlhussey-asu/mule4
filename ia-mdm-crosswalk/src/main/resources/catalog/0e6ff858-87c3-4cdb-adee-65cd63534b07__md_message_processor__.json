@@ -1,0 +1,13 @@
+{
+    "inputMessageMetadata": {},
+    "outputMessageMetadata": {
+        "flowVariables": {
+            "invalidParam": {
+                "connectorName": "#_custom_mule_metadata_type_#",
+                "typeId": "errorJSON"
+            }
+        }
+    },
+    "id": "0e6ff858-87c3-4cdb-adee-65cd63534b07",
+    "version": "5.2.0.0"
+}

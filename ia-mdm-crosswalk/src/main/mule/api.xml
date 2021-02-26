@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mule xmlns="http://www.mulesoft.org/schema/mule/core"
+	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd">
+
+	<flow name="get:\ping:asu-sf-xwalk-config">
+		<set-payload
+			value="{&quot;response&quot;: &quot;ping ok&quot;}"
+			doc:name="Set Payload" />
+
+		<flow-ref name="router-exit" doc:name="router-exit" />
+		<error-handler ref="apiErrorStrategy"
+			doc:name="Reference Exception Strategy" />
+	</flow>
+
+	<flow name="get:\xwalk\(id):asu-sf-xwalk-config">
+		<flow-ref name="setVars" doc:name="Set Vars" />
+
+		<flow-ref name="getLogic" doc:name="GET Logic" />
+
+		<flow-ref name="router-exit" doc:name="router-exit" />
+		<error-handler ref="apiErrorStrategy"
+			doc:name="Reference Exception Strategy" />
+	</flow>
+
+	<flow name="get:\xwalk:asu-sf-xwalk-config">
+		<flow-ref name="setVars" doc:name="Set Vars" />
+
+		<flow-ref name="getLogic" doc:name="GET Logic" />
+
+		<flow-ref name="router-exit" doc:name="router-exit" />
+		<error-handler ref="apiErrorStrategy"
+			doc:name="Reference Exception Strategy" />
+	</flow>
+
+	<flow name="get:\xwalkBatch:asu-sf-xwalk-config">
+		<flow-ref name="router-exit" doc:name="router-exit" />
+		<error-handler ref="apiErrorStrategy"
+			doc:name="Reference Exception Strategy" />
+	</flow>
+
+</mule>

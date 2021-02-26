@@ -1,0 +1,13 @@
+{
+    "inputMessageMetadata": {},
+    "outputMessageMetadata": {
+        "flowVariables": {
+            "batchContact": {
+                "connectorName": "Salesforce__Basic_Authentication",
+                "typeId": "Contact"
+            }
+        }
+    },
+    "id": "add63f0f-3a78-4801-9bfd-6be5c6869e05",
+    "version": "5.2.0.0"
+}

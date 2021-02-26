@@ -1,0 +1,21 @@
+# Wrapper section
+asu.sf.api.ent.user=
+asu.sf.api.ent.password=
+asu.sf.api.ent.token=
+
+asu.sf.api.edplus.user=
+asu.sf.api.edplus.password=
+asu.sf.api.edplus.token=
+
+api.name=asu-sf-xwalk
+api.base.version=v1
+api.env=-dev
+api.version=${api.base.version}
+api.base.path=/api/${api.version}/${api.name}/*
+api.title=Salesforce Org to Org MDM Crosswalk API
+
+api.auto.name=${api.title}
+api.auto.version=v1-dev
+
+sf.url=https://test.salesforce.com
+sf.api.version=46.0

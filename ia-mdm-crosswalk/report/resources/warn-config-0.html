@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title>Mule Migratiol Assistant Report</title>
+    <link rel="stylesheet" type="text/css" href="../assets/styles/mulesoft-styles.css">
+    <link rel="stylesheet" type="text/css" href="../assets/styles/tsorter.css">
+</head>
+<body>
+    <div class="mulesoft-topbar">
+        <div class="mulesoft-appbar">
+            <div class="muleicon muleicon-logo"></div>
+            <div class="anypoint-brand">Mule Migration Assistant 1.0.0</div>
+        </div>
+    </div>
+    <div class="col-md-2 col-md-offset-1 sidemenu">
+        <ul class="sidemenu-back">
+            <li><a href="../summary.html">Summary</a></li>
+        </ul>
+    </div>
+    <div class="col-md-8">
+        <h2 class="text-bold">Issues found on: <span class="text-italic text-normal">config.xml</span></h2>
+        <h4 class="text-bold">Description: <span class="text-italic text-normal">consoleEnabled property do not exist in Mule 4.</span></h4>
+        <h4 class="text-bold">Documentation: </h4>
+        <hr>
+        <br>
+            <div class="col-md-12">
+                <h4 class="text-bold">
+                    Line: <span class="text-italic text-normal">2</span>&nbsp;
+                    Column: <span class="text-italic text-normal">1,202</span>
+                </h4>
+                <br>
+                <pre>&lt;mule xsi:schemaLocation=&quot;http://www.mulesoft.org/schema/mule/validation http://www.mulesoft.org/schema/mule/validation/current/mule-validation.xsd http://www.mulesoft.org/schema/mule/db http://www.mulesoft.org/schema/mule/db/current/mule-db.xsd http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-current.xsd http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd http://www.mulesoft.org/schema/mule/sfdc http://www.mulesoft.org/schema/mule/sfdc/current/mule-sfdc.xsd http://www.mulesoft.org/schema/mule/api-platform-gw http://www.mulesoft.org/schema/mule/api-platform-gw/current/mule-api-platform-gw.xsd http://www.mulesoft.org/schema/mule/apikit http://www.mulesoft.org/schema/mule/apikit/current/mule-apikit.xsd http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-current.xsd http://www.mulesoft.org/schema/mule/secure-property-placeholder http://www.mulesoft.org/schema/mule/secure-property-placeholder/current/mule-secure-property-placeholder.xsd http://www.mulesoft.org/schema/mule/secure-properties http://www.mulesoft.org/schema/mule/secure-properties/current/mule-secure-properties.xsd&quot;&gt;
+    &lt;validation:config name=&quot;Validation_Configuration&quot; doc:name=&quot;Validation Configuration&quot; /&gt;
+    &lt;api-platform-gw:api apiName=&quot;${api.auto.name}&quot; version=&quot;${api.auto.version}&quot; flowRef=&quot;asu-sf-xwalk-main&quot; create=&quot;false&quot; doc:name=&quot;API Autodiscovery&quot; apikitRef=&quot;asu-sf-xwalk-config&quot; /&gt;
+    &lt;apikit:config name=&quot;asu-sf-xwalk-config&quot; raml=&quot;asu-sf-xwalk.raml&quot; consoleEnabled=&quot;false&quot; doc:name=&quot;Router&quot; outboundHeadersMapName=&quot;outboundHeaders&quot; httpStatusVarName=&quot;httpStatus&quot; /&gt;
+    &lt;secure-properties:config file=&quot;asu-sf-mdm-xwalk.properties&quot; key=&quot;${asu-sf-mdm-xwalk.password}&quot; name=&quot;Secure_Property_Placeholder&quot;&gt;
+        &lt;!--Migration ERROR: Review uses of properties defined in the referenced file, and add the &apos;secure&apos; prefix to them.--&gt;
+        &lt;!--    For more information refer to:--&gt;
+        &lt;!--        * https://docs.mulesoft.com/mule-runtime/4.3/migration-secure-properties-placeholder--&gt;
+        &lt;!--        * https://docs.mulesoft.com/mule-runtime/4.3/secure-configuration-properties#usage--&gt;
+        &lt;secure-properties:encrypt algorithm=&quot;Blowfish&quot; mode=&quot;CBC&quot; /&gt;
+    &lt;/secure-properties:config&gt;
+    &lt;db:config name=&quot;Heroku_PostgreSQL&quot; doc:name=&quot;Generic Database Configuration&quot;&gt;
+        &lt;db:generic-connection url=&quot;jdbc:postgresql://${heroku.postgresSql.host}:${heroku.postgresSql.port}/${heroku.postgresSql.database}?user=${heroku.postgresSql.user}&amp;amp;password=${heroku.postgresSql.password}&amp;amp;sslmode=require&quot; driverClassName=&quot;org.postgresql.Driver&quot;&gt;
+            &lt;!--Migration INFO: The config in Mule 3 is specific for an engine, but it contained a &apos;url&apos; attribute. It will be made generic to keep the URL.--&gt;
+            &lt;!--    For more information refer to:--&gt;
+            &lt;!--        * https://docs.mulesoft.com/mule-runtime/4.3/migration-connectors-database#example_generic_db--&gt;
+            &lt;reconnection failsDeployment=&quot;true&quot; /&gt;
+        &lt;/db:generic-connection&gt;
+    &lt;/db:config&gt;
+    &lt;sfdc:cached-basic-config name=&quot;Salesforce__EdPlus&quot; username=&quot;${asu.edplus.api.user}&quot; password=&quot;****&quot; securityToken=&quot;${asu.edplus.api.token}&quot; url=&quot;${sf.url}&quot; doc:name=&quot;Salesforce: Basic Authentication&quot;&gt;
+        &lt;!--Migration ERROR: The migration of &apos;sfdc&apos; is not supported.--&gt;
+        &lt;!--    For more information refer to:--&gt;
+        &lt;!--        * https://docs.mulesoft.com/mule-runtime/4.3/migration-connectors--&gt;
+        &lt;!--        * https://github.com/mulesoft/mule-migration-assistant/blob/master/docs/user-docs/migration-tool.adoc#unsupported_connectors--&gt;
+    &lt;/sfdc:cached-basic-config&gt;
+    &lt;sfdc:cached-basic-config name=&quot;Salesforce__Enterprise&quot; username=&quot;${asu.sf.api.user}&quot; password=&quot;****&quot; securityToken=&quot;${asu.sf.api.token}&quot; url=&quot;${sf.url}&quot; doc:name=&quot;Salesforce: Basic Authentication&quot;&gt;
+        &lt;!--Migration ERROR: The migration of &apos;sfdc&apos; is not supported.--&gt;
+        &lt;!--    For more information refer to:--&gt;
+        &lt;!--        * https://docs.mulesoft.com/mule-runtime/4.3/migration-connectors--&gt;
+        &lt;!--        * https://github.com/mulesoft/mule-migration-assistant/blob/master/docs/user-docs/migration-tool.adoc#unsupported_connectors--&gt;
+    &lt;/sfdc:cached-basic-config&gt;
+&lt;/mule&gt;</pre>
+                <hr>
+            </div>
+    </div>
+</body>
+</html>

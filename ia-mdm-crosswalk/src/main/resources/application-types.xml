@@ -1,0 +1,95 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<types:mule xmlns:types="http://www.mulesoft.org/schema/mule/types">
+  <types:catalog>
+    <types:type name="sfContacts" format="java">
+      <types:shape format="raml"><![CDATA[#%RAML 1.0 DataType
+type: object
+properties:
+    contactId:
+        type: string
+    guid:
+        type: string
+    sourceOrgId:
+        type: string
+    lastModifiedDate:
+        type: datetime]]></types:shape>
+    </types:type>
+    <types:type name="whereClause" format="java">
+      <types:shape format="raml"><![CDATA[#%RAML 1.0 DataType
+type: string]]></types:shape>
+    </types:type>
+    <types:type name="inboundQueryParams" format="java">
+      <types:shape format="raml"><![CDATA[#%RAML 1.0 DataType
+type: object
+properties:
+    guid:
+        type: string
+        required: false
+    sourceOrgId:
+        type: string
+        required: false]]></types:shape>
+    </types:type>
+    <types:type name="contact" format="java">
+      <types:shape format="raml"><![CDATA[#%RAML 1.0 DataType
+type: object
+properties:
+    contact_id:
+        type: string
+    guid:
+        type: string
+    last_modified_date:
+        type: datetime
+    source_org_id:
+        type: string]]></types:shape>
+    </types:type>
+    <types:type name="deletedRecords" format="java">
+      <types:shape format="java" element="java.util.ArrayList"/>
+    </types:type>
+  </types:catalog>
+  <types:enrichment select="#af7bf921-e4c7-4217-8bdd-7ac67dd4bb5b">
+    <types:processor-declaration>
+      <types:input-event>
+        <types:message>
+          <types:payload type="contact"/>
+        </types:message>
+      </types:input-event>
+      <types:output-event>
+        <types:message>
+          <types:payload type="sfContacts"/>
+        </types:message>
+      </types:output-event>
+    </types:processor-declaration>
+  </types:enrichment>
+  <types:enrichment select="#d71fb2e5-6c7b-4469-a9f2-0f31d616b14c">
+    <types:processor-declaration>
+      <types:output-event>
+        <types:message>
+          <types:payload type="sfContacts"/>
+        </types:message>
+      </types:output-event>
+    </types:processor-declaration>
+  </types:enrichment>
+  <types:enrichment select="#9b8ab52d-63d9-4414-adb8-1c3c8ff854e7">
+    <types:processor-declaration>
+      <types:input-event>
+        <types:message>
+          <types:attributes type="inboundQueryParams"/>
+        </types:message>
+      </types:input-event>
+      <types:output-event>
+        <types:variables>
+          <types:variable name="whereClause" type="whereClause"/>
+        </types:variables>
+      </types:output-event>
+    </types:processor-declaration>
+  </types:enrichment>
+  <types:enrichment select="#44ec397e-9226-4aa7-9d25-0d1d01dd51b4">
+    <types:processor-declaration>
+      <types:output-event>
+        <types:message>
+          <types:payload type="deletedRecords"/>
+        </types:message>
+      </types:output-event>
+    </types:processor-declaration>
+  </types:enrichment>
+</types:mule>

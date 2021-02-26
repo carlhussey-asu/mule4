@@ -1,0 +1,17 @@
+{
+    "inputMessageMetadata": {},
+    "outputMessageMetadata": {
+        "messagePayload": {
+            "connectorName": "#_custom_mule_metadata_type_#",
+            "typeId": "schemaPutPost"
+        },
+        "flowVariables": {
+            "xwalkFound": {
+                "connectorName": "#_custom_mule_metadata_type_#",
+                "typeId": "boolean"
+            }
+        }
+    },
+    "id": "2185ccfc-a3fd-4048-b06a-e57a9cf334d0",
+    "version": "5.2.0.0"
+}

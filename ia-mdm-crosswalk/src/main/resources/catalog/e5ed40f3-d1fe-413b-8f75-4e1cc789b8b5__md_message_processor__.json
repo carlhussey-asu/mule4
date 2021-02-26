@@ -1,0 +1,13 @@
+{
+    "inputMessageMetadata": {},
+    "outputMessageMetadata": {
+        "sessionVariables": {
+            "inboundPayload": {
+                "connectorName": "#_custom_mule_metadata_type_#",
+                "typeId": "inboundPayload"
+            }
+        }
+    },
+    "id": "e5ed40f3-d1fe-413b-8f75-4e1cc789b8b5",
+    "version": "5.2.0.0"
+}

@@ -1,0 +1,378 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mule
+	xmlns:salesforce="http://www.mulesoft.org/schema/mule/salesforce"
+	xmlns:os="http://www.mulesoft.org/schema/mule/os"
+	xmlns="http://www.mulesoft.org/schema/mule/core"
+	xmlns:batch="http://www.mulesoft.org/schema/mule/batch"
+	xmlns:compatibility="http://www.mulesoft.org/schema/mule/compatibility"
+	xmlns:db="http://www.mulesoft.org/schema/mule/db"
+	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
+	xmlns:dw="http://www.mulesoft.org/schema/mule/ee/dw"
+	xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core"
+	xmlns:validation="http://www.mulesoft.org/schema/mule/validation"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.mulesoft.org/schema/mule/db http://www.mulesoft.org/schema/mule/db/current/mule-db.xsd http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd http://www.mulesoft.org/schema/mule/validation http://www.mulesoft.org/schema/mule/validation/current/mule-validation.xsd http://www.mulesoft.org/schema/mule/batch http://www.mulesoft.org/schema/mule/batch/current/mule-batch.xsd http://www.mulesoft.org/schema/mule/ee/dw http://www.mulesoft.org/schema/mule/ee/dw/current/dw.xsd http://www.mulesoft.org/schema/mule/compatibility http://www.mulesoft.org/schema/mule/compatibility/current/mule-compatibility.xsd http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/os http://www.mulesoft.org/schema/mule/os/current/mule-os.xsd
+http://www.mulesoft.org/schema/mule/salesforce http://www.mulesoft.org/schema/mule/salesforce/current/mule-salesforce.xsd">
+
+	<sub-flow name="setVars">
+		<set-variable
+			value="guid, contact_id, last_modified_date, source_org_id"
+			doc:name="Set Variable - xWalk Fields"
+			doc:id="aaa5a69d-6bc6-4cec-864d-1df5bac4d0f8"
+			variableName="xWalkFields" />
+	</sub-flow>
+
+	<sub-flow name="getLogic">
+		<logger
+			message="#[output text/plain --- &quot;Begin Get Logic - Inbound Query Params: $(write(attributes.queryParams, 'application/json'))&quot;]"
+			level="DEBUG" category="edu.asu.uto.debug"
+			doc:name="Logger - Begin Get Logic" />
+		<choice doc:name="Choice - Lookup Type">
+			<when expression="#[(sizeOf(attributes.queryParams)) &gt; 0]">
+				<flow-ref name="setWhereInboundParamsSub_Flow"
+					doc:name="Set Where Inbound Params" />
+			</when>
+			<otherwise>
+				<flow-ref name="setWhereIdSub_Flow"
+					doc:name="Validate and Set Where Id" />
+			</otherwise>
+		</choice>
+		<flow-ref name="queryPostgresSub_Flow"
+			doc:name="Query Postgres" />
+		<flow-ref name="prepareOutputSub_Flow"
+			doc:name="Prepare Response JSON Output" />
+	</sub-flow>
+
+	<sub-flow name="setWhereIdSub_Flow">
+		<logger message="Entering validateInboundSub_Flow"
+			level="DEBUG" category="edu.asu.uto.debug"
+			doc:name="Logger - Validate Inbound Params" />
+		<validation:is-true config-ref="Validation_Config" message="Invalid URI Parameter. ContactId should be 18 characters." expression="#[sizeOf(attributes.uriParams.id) == 18]" doc:name="Validate URI Param" />
+		<choice doc:name="Choice - Valid Id">
+			<when expression="#[sizeOf (attributes.uriParams.id) == 18]">
+				<set-variable
+					value="#['WHERE contact_id =\'$(attributes.uriParams.id)\'']"
+					doc:name="Set Where ID Clause"
+					doc:id="da32f217-8e79-434f-8153-d7dc623bb227"
+					variableName="whereClause" />
+				<logger
+					message='#["Exiting validateInboundSub_Flow | Where Clause: " ++ vars.whereClause]'
+					level="DEBUG" category="edu.asu.uto.debug" doc:name="Logger - Exit" />
+			</when>
+			<otherwise>
+				<set-variable value="400" doc:name="http.status 400" doc:id="b94b0b20-d0fe-4044-b983-96a4bbcbf3b2" variableName="httpStatus"/>
+				<set-payload
+					value='#[{"status": 400, "message": "Salesforce Contact Id is 18 characters starting with 003"}]'
+					doc:name="Set Error Message" />
+			</otherwise>
+		</choice>
+	</sub-flow>
+
+	<sub-flow name="setWhereInboundParamsSub_Flow">
+		<logger
+			message="#[output text/plain --- &quot;Entering setWhereInboundParamsSub_Flow | Inbound Query Params:&quot; ++ &quot;$(write(attributes.queryParams, 'application/json'))&quot;]"
+			level="DEBUG" category="edu.asu.uto.debug"
+			doc:name="Logger - Inbound Params" />
+		<ee:transform doc:name="Prepare Where Clause" doc:id="9b8ab52d-63d9-4414-adb8-1c3c8ff854e7">
+			<ee:message>
+			</ee:message>
+			<ee:variables>
+				<ee:set-variable resource="dwl/createWhereClauseInboundParams.dwl" variableName="whereClause" />
+			</ee:variables>
+		</ee:transform>
+		<validation:is-true config-ref="Validation_Config"
+			message="Missing or Invalid Inbound Query Parameter"
+			expression="#[vars.whereClause != '']"
+			doc:name="Validate Query Param" />
+		<choice doc:name="Choice - Has Where Clause">
+			<when expression="#[vars.whereClause != '']">
+				<set-variable value="#['WHERE  $((vars.whereClause default &quot;&quot;))']"
+					doc:name="Set Where Params Clause"
+					doc:id="7adc798f-749c-484b-9917-ac8c8ec5fdd2"
+					variableName="whereClause" />
+				<logger
+					message='#["Exiting setWhereInboundParamsSub_Flow | Where Clause: $(vars.whereClause)"]'
+					level="DEBUG" category="edu.asu.uto.debug" doc:name="Logger - Exit" />
+			</when>
+			<otherwise>
+				<set-variable value="400" doc:name="http.status 400" doc:id="741ef6d7-49c9-46c3-8ba7-b1ab633d887d" variableName="httpStatus"/>
+				<set-payload
+					value='#[{"status": 400, "message": "Missing or Invalid Query Parameter"}]'
+					doc:name="Set Error Message" />
+			</otherwise>
+		</choice>
+	</sub-flow>
+
+	<sub-flow name="queryPostgresSub_Flow">
+		<logger
+			message="#[&quot;Entering queryPostgresSub_Flow | SELECT $((vars.xWalkFields default &quot;&quot;)) FROM &quot; ++ p('secure::heroku.postgresSql.schema') ++ &quot;.crosswalk_contacts $((vars.whereClause default &quot;&quot;))&quot;]"
+			level="DEBUG" category="edu.asu.uto.debug" doc:name="Logger - Select" />
+		<db:select config-ref="Database_Config"
+			doc:name="Heroku Postgres Database">
+			<db:sql><![CDATA[#["SELECT $(vars.xWalkFields) FROM " ++ p('secure::heroku.postgresSql.schema') ++".crosswalk_contacts $(vars.whereClause)"]]]></db:sql>
+		</db:select>
+		<logger
+			message="#[output text/plain --- &quot;Exiting queryPostgresSub_Flow | Payload From Query: $(write(payload, 'application/json'))&quot;]"
+			level="DEBUG" category="edu.asu.uto.debug" doc:name="Logger - Exit" />
+	</sub-flow>
+
+	<sub-flow name="prepareOutputSub_Flow">
+		<ee:transform doc:name="Transform Message"
+			doc:id="af7bf921-e4c7-4217-8bdd-7ac67dd4bb5b">
+			<ee:message>
+				<ee:set-payload><![CDATA[%dw 2.0
+output application/json
+
+fun formatDate(dateString) = (dateString as String {format: "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'"})
+---
+payload map ((payload01 , indexOfPayload01) -> {
+	contactId: payload01.contact_id,
+	guid: payload01.guid,
+	lastModifiedDate: formatDate(payload01.last_modified_date),
+	sourceOrgId: payload01.source_org_id
+})]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+
+	</sub-flow>
+
+	<flow name="businesslogicBatch_Enterprise"
+		doc:id="0b2475c7-77b8-42dd-8660-a0875e0db5ac">
+		<scheduler doc:name="Scheduler"
+			doc:id="c765b5d7-5b87-486a-9f36-72014121d7ad">
+			<scheduling-strategy>
+				<fixed-frequency frequency="1" timeUnit="MINUTES" startDelay="1"/>
+			</scheduling-strategy>
+		</scheduler>
+		<os:retrieve doc:name="Retrieve Watermark Date"
+			doc:id="6a8a7016-8d9a-4465-a921-89d9066bae8b"
+			key="enterpriseLastUpdate" objectStore="watermarkStore"
+			target="watermarkEnterprise">
+			<os:default-value><![CDATA[#[%dw 2.0
+output application/java
+---
+(now()  - |P10D|) as DateTime as String {format: "yyyy-MM-dd'T'HH:mm:ss.SSSZ"}]]]></os:default-value>
+		</os:retrieve>
+		<logger level="DEBUG" doc:name="Logger - Query SF"
+			doc:id="85cd342d-3743-41f6-978c-15ad62403f48"
+			message="#['Watermark Set as: ' ++ (vars.watermarkEnterprise as String) ++ ' | SELECT Id,LastModifiedDate,SSB_CRMSYSTEM_CONTACT_ID__c, IsDeleted FROM Contact where SSB_CRMSYSTEM_CONTACT_ID__c != null and LastModifiedDate &gt; ' ++ (vars.watermarkEnterprise as String) ++ ' order by LastModifiedDate ASC']"
+			category="edu.asu.uto.debug" />
+		<salesforce:query-all
+			doc:name="Query all - Salesforce Enterprise"
+			doc:id="06194dd9-bdeb-4b79-9ad4-79bc0167f31d"
+			config-ref="Salesforce__Enterprise">
+			<salesforce:salesforce-query><![CDATA[SELECT Id,LastModifiedDate,SSB_CRMSYSTEM_CONTACT_ID__c, IsDeleted FROM Contact where SSB_CRMSYSTEM_CONTACT_ID__c != null and LastModifiedDate > :watermark order by LastModifiedDate ASC]]></salesforce:salesforce-query>
+			<salesforce:parameters><![CDATA[#[output application/java
+---
+{
+	watermark : vars.watermarkEnterprise
+}]]]></salesforce:parameters>
+		</salesforce:query-all>
+		<ee:transform doc:name="Map Response" doc:id="d71fb2e5-6c7b-4469-a9f2-0f31d616b14c">
+			<ee:message>
+				<ee:set-payload><![CDATA[%dw 2.0
+output application/java
+---
+payload map ((payload01 , indexOfPayload01) -> {
+	contactId: payload01.Id,
+	guid: payload01.SSB_CRMSYSTEM_CONTACT_ID__c,
+	sourceOrgId: p('secure::asu.sf.api.orgId')
+})]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+		<batch:job jobName="businesslogicBatchEnterprise_Job"
+			doc:id="c455f140-77a1-46a0-883e-f8952913d40b">
+			<batch:process-records>
+				<batch:step name="Batch_Step"
+					doc:id="e23bbee5-17fe-4d9b-8ac7-a9ccad09336a">
+					<batch:aggregator doc:name="Batch Aggregator"
+						doc:id="b928d7de-de4a-437c-9be0-7d06fff44617" size="100">
+						<flow-ref doc:name="Upsert" doc:id="aeb7c219-f15c-43bf-baad-7d656cc33a1f" name="upsertSub_Flow"/>
+					</batch:aggregator>
+				</batch:step>
+			</batch:process-records>
+			<batch:on-complete>
+				<os:store doc:name="Store Watermark Date"
+					doc:id="f3d692ef-369c-4786-aa45-0a9da4ca85c3"
+					key="enterpriseLastUpdate" objectStore="watermarkStore">
+					<os:value><![CDATA[#[%dw 2.0
+output application/java
+---
+now() as DateTime as String {format: "yyyy-MM-dd'T'HH:mm:ss.SSSZ"}]]]></os:value>
+				</os:store>
+				<logger level="DEBUG" doc:name="Logger - Batch Complete"
+					doc:id="1e931abe-f920-4859-b589-92654a5fa3fa"
+					message="#['Batch Enterprise SF -&gt; PostgreSQL has finished | Watermark Updated to: ' ++ now() as DateTime as String {format: &quot;yyyy-MM-dd'T'HH:mm:ss.SSSZ&quot;}]"
+					category="edu.asu.uto.debug" />
+				<flow-ref doc:name="Run Batch Delete - Enterprise" doc:id="224a6c91-a828-4870-90f1-faa1d9cb4bb8" name="businesslogicBatchDelete_Enterprise"/>
+			</batch:on-complete>
+		</batch:job>
+	</flow>
+	
+	<flow name="businesslogicBatch_EdPlus"
+		doc:id="ef2d98cb-882c-4c8c-9521-c5494940ef88">
+		<scheduler doc:name="Scheduler"
+			doc:id="635a82fc-0a58-4d0b-9a28-47c1ee878260">
+			<scheduling-strategy>
+				<fixed-frequency frequency="1" timeUnit="MINUTES" startDelay="1"/>
+			</scheduling-strategy>
+		</scheduler>
+		<os:retrieve doc:name="Retrieve Watermark Date"
+			doc:id="9e97c7e6-9ce4-4eeb-99ac-b02c618c5cbf"
+			key="edPlusLastUpdate" objectStore="watermarkStore"
+			target="watermarkEdPlus">
+			<os:default-value><![CDATA[#[%dw 2.0
+output application/java
+---
+(now()  - |P10D|) as DateTime as String {format: "yyyy-MM-dd'T'HH:mm:ss.SSSZ"}]]]></os:default-value>
+		</os:retrieve>
+		<logger level="DEBUG" doc:name="Logger - Query SF"
+			doc:id="dfb6c8da-7c00-429c-a3d7-27f126f628eb"
+			message="#['Watermark Set as: ' ++ (vars.watermarkEdPlus as String) ++ ' | SELECT Id,LastModifiedDate,SSB_CRMSYSTEM_Contact_ID__c, IsDeleted FROM Contact where SSB_CRMSYSTEM_Contact_ID__c != null and LastModifiedDate &gt; ' ++ (vars.watermarkEdPlus as String) ++ ' order by LastModifiedDate ASC']"
+			category="edu.asu.uto.debug" />
+		<salesforce:query-all
+			doc:name="Query all - Salesforce EdPlus"
+			doc:id="58f65e6f-c290-4596-a365-7bf6f92ae221"
+			config-ref="Salesforce__EdPlus">
+			<salesforce:salesforce-query><![CDATA[SELECT Id,LastModifiedDate,SSB_CRMSYSTEM_Contact_ID__c, IsDeleted FROM Contact where SSB_CRMSYSTEM_Contact_ID__c != null and LastModifiedDate > :watermark order by LastModifiedDate ASC]]></salesforce:salesforce-query>
+			<salesforce:parameters><![CDATA[#[output application/java
+---
+{
+	watermark : vars.watermarkEdPlus
+}]]]></salesforce:parameters>
+		</salesforce:query-all>
+		<ee:transform doc:name="Map Response" doc:id="0bbadaf3-99c8-4adf-8e67-8ea67acaaa9c">
+			<ee:message>
+				<ee:set-payload><![CDATA[%dw 2.0
+output application/java
+---
+payload map ((payload01 , indexOfPayload01) -> {
+	contactId: payload01.Id,
+	guid: payload01.SSB_CRMSYSTEM_Contact_ID__c,
+	sourceOrgId: p('secure::asu.edplus.api.orgId')
+})]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+		<batch:job jobName="businesslogicBatchEdPlus_Job"
+			doc:id="5716cbf3-39a5-42ff-865e-f6fc7e1fd2d1">
+			<batch:process-records>
+				<batch:step name="Batch_Step"
+					doc:id="c4748e8e-45ba-402b-bbc0-a86daa86113b">
+					<batch:aggregator doc:name="Batch Aggregator"
+						doc:id="7244cf11-4566-429a-817a-bfad84934ac9" size="100">
+						<flow-ref doc:name="Upsert" doc:id="bed15630-8c2c-4fe0-9a7b-8be033f432a6" name="upsertSub_Flow"/>
+					</batch:aggregator>
+				</batch:step>
+			</batch:process-records>
+			<batch:on-complete>
+				<os:store doc:name="Store Watermark Date"
+					doc:id="607647c5-156f-42b6-bb3e-ef606d287ac3"
+					key="edPlusLastUpdate" objectStore="watermarkStore">
+					<os:value><![CDATA[#[%dw 2.0
+output application/java
+---
+now() as DateTime as String {format: "yyyy-MM-dd'T'HH:mm:ss.SSSZ"}]]]></os:value>
+				</os:store>
+				<logger level="DEBUG" doc:name="Logger - Batch Complete"
+					doc:id="5c78edfd-5c49-4f88-8e17-edcebefb5a4f"
+					message="#['Batch EdPlus SF -&gt; PostgreSQL has finished | Watermark Updated to: ' ++ now() as DateTime as String {format: &quot;yyyy-MM-dd'T'HH:mm:ss.SSSZ&quot;}]"
+					category="edu.asu.uto.debug" />
+				<flow-ref doc:name="Run Batch Delete - EdPlus" doc:id="d3334b10-9475-4c32-a2c2-dc56c8a515f6" name="businesslogicBatchDelete_EdPlus"/>
+			</batch:on-complete>
+		</batch:job>
+	</flow>
+
+	
+	<flow name="businesslogicBatchDelete_Enterprise">
+		<salesforce:get-deleted objectType="Contact" doc:name="Get deleted" doc:id="c2c75069-8ee9-410c-91cd-82256c777e69" config-ref="Salesforce__Enterprise" startDate='#[( now() - |P1D| &gt;&gt; "UTC") as LocalDateTime {format: "yyyy-MM-dd HH:mm:ss"}]' endDate='#[(now()  &gt;&gt; "UTC") as LocalDateTime {format: "yyyy-MM-dd HH:mm:ss"}]'/>
+		<ee:transform doc:name="Map Payload" doc:id="44ec397e-9226-4aa7-9d25-0d1d01dd51b4" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/java
+---
+payload.deletedRecords map ((payload01 , indexOfPayload01) -> {
+	Id: payload01.Id
+})]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+		<logger level="DEBUG" doc:name="Logger - Set Delete Payload" doc:id="3331011e-1c92-4a29-9a3b-02d6c0a4405a" message="#[output text/plain --- &quot;Set DELETE Payload:&quot; ++ &quot;$(write(payload, 'application/json'))&quot;]" category="edu.asu.uto.debug"/>
+		<batch:job jobName="businesslogicBatchDelete_Enterprise">
+			<batch:process-records>
+				<batch:step
+					name="Batch_Delete_Enterprise_Crosswalk_Records"
+					acceptExpression="#[isEmpty(payload) == false]">
+					<batch:aggregator size="50"
+						doc:name="Batch Commit">
+						<flow-ref name="deleteSub_Flow" doc:name="Delete" />
+					</batch:aggregator>
+				</batch:step>
+			</batch:process-records>
+			<batch:on-complete>
+				<logger
+					message="Batch Delete Complete	| Enterprise SF -&gt; Delete PostgreSQL Crosswalk Records has finished"
+					level="DEBUG" category="edu.asu.uto.debug"
+					doc:name="Logger - Batch Complete" />
+			</batch:on-complete>
+		</batch:job>
+	</flow>
+	
+	<flow name="businesslogicBatchDelete_EdPlus">
+		<salesforce:get-deleted objectType="Contact" doc:name="Get deleted" doc:id="9c46656b-c528-485f-94e8-56e3d32e7785" config-ref="Salesforce__EdPlus" startDate='#[( now() - |P1D| &gt;&gt; "UTC") as LocalDateTime {format: "yyyy-MM-dd HH:mm:ss"}]' endDate='#[(now()  &gt;&gt; "UTC") as LocalDateTime {format: "yyyy-MM-dd HH:mm:ss"}]'/>
+		<ee:transform doc:name="Map Payload" doc:id="cba5d706-3dea-40af-929a-b20aadd1788a" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/java
+---
+payload.deletedRecords map ((payload01 , indexOfPayload01) -> {
+	Id: payload01.Id
+})]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+		<logger level="DEBUG" doc:name="Logger - Set Delete Payload" doc:id="91b2f9ea-0dc5-445c-9a80-5f1ec18b4c85" message="#[output text/plain --- &quot;Set DELETE Payload:&quot; ++ &quot;$(write(payload, 'application/json'))&quot;]" category="edu.asu.uto.debug"/>
+		<batch:job jobName="businesslogicBatchDelete_EdPlus">
+			<batch:process-records>
+				<batch:step
+					name="Batch_Delete_EdPlus_Crosswalk_Records"
+					acceptExpression="#[isEmpty(payload) == false]">
+					<batch:aggregator size="50"
+						doc:name="Batch Commit">
+						<flow-ref name="deleteSub_Flow" doc:name="Delete" />
+					</batch:aggregator>
+				</batch:step>
+			</batch:process-records>
+			<batch:on-complete>
+				<logger
+					message="Batch Delete Complete	| EdPlus SF -&gt; Delete PostgreSQL Crosswalk Records has finished"
+					level="DEBUG" category="edu.asu.uto.debug"
+					doc:name="Logger - Batch Complete" />
+			</batch:on-complete>
+		</batch:job>
+	</flow>
+	
+	
+	
+	<sub-flow name="upsertSub_Flow">
+		<logger
+			message="#[output text/plain --- &quot;Payload for Upsert:&quot; ++ &quot;$(write(payload, 'application/json'))&quot;]"
+			level="DEBUG" category="edu.asu.uto.debug"
+			doc:name="Logger - Upsert Payload" />
+		<db:bulk-insert config-ref="Database_Config"
+			doc:name="Heroku Postgres Database - Upsert">
+			<db:sql><![CDATA[#['INSERT INTO ' ++ p("secure::heroku.postgresSql.schema") ++ '.crosswalk_contacts ("contact_id", "guid", "source_org_id") VALUES (:contactId, :guid , :sourceOrgId) ON CONFLICT ON CONSTRAINT "crosswalk_contacts_pkey" DO UPDATE SET guid = :guid where ("crosswalk_contacts".guid, "crosswalk_contacts".source_org_id) is distinct from (excluded.guid, excluded.source_org_id);']]]></db:sql>
+		</db:bulk-insert>
+	</sub-flow>
+	<sub-flow name="deleteSub_Flow">
+		<logger
+			message="#[output text/plain --- &quot;DELETE FROM $(p('secure::heroku.postgresSql.schema')).'crosswalk_contacts' WHERE contact_id =&quot; ++ &quot;$(write(payload, 'application/json'))&quot;]"
+			level="DEBUG" category="edu.asu.uto.debug"
+			doc:name="Logger - Deleted Records" />
+
+		
+		
+		<db:bulk-delete config-ref="Database_Config"
+			doc:name="Heroku Postgres Database - Delete">
+			<db:sql><![CDATA[#['DELETE FROM ' ++ p("secure::heroku.postgresSql.schema") ++ '.crosswalk_contacts WHERE contact_id = :Id']]]></db:sql>
+		</db:bulk-delete> 
+	</sub-flow>
+</mule>

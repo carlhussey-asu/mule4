@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title>Mule Migratiol Assistant Report</title>
+    <link rel="stylesheet" type="text/css" href="../assets/styles/mulesoft-styles.css">
+    <link rel="stylesheet" type="text/css" href="../assets/styles/tsorter.css">
+</head>
+<body>
+    <div class="mulesoft-topbar">
+        <div class="mulesoft-appbar">
+            <div class="muleicon muleicon-logo"></div>
+            <div class="anypoint-brand">Mule Migration Assistant 1.0.0</div>
+        </div>
+    </div>
+    <div class="col-md-2 col-md-offset-1 sidemenu">
+        <ul class="sidemenu-back">
+            <li><a href="../summary.html">Summary</a></li>
+        </ul>
+    </div>
+    <div class="col-md-8">
+        <h2 class="text-bold">Issues found on: <span class="text-italic text-normal">errorHandling.xml</span></h2>
+        <h4 class="text-bold">Description: <span class="text-italic text-normal">Instead of using outbound properties in the flow, move the expression that sets the property into the XML attribute (such as 'method') of the operation or listener that accepts the expression.</span></h4>
+        <h4 class="text-bold">Documentation: </h4>
+            <h4><a href="https://github.com/mulesoft/mule-migration-assistant/blob/master/docs/user-docs/migration-tool-post-mig.adoc#outbound_properties">https://github.com/mulesoft/mule-migration-assistant/blob/master/docs/user-docs/migration-tool-post-mig.adoc#outbound_properties</a></h4>
+        <hr>
+        <br>
+            <div class="col-md-12">
+                <h4 class="text-bold">
+                    Line: <span class="text-italic text-normal">140</span>&nbsp;
+                    Column: <span class="text-italic text-normal">114</span>
+                </h4>
+                <br>
+                <pre>&lt;set-property propertyName=&quot;Content-Type&quot; value=&quot;application/json&quot; doc:name=&quot;Property&quot; /&gt;</pre>
+                <hr>
+            </div>
+            <div class="col-md-12">
+                <h4 class="text-bold">
+                    Line: <span class="text-italic text-normal">107</span>&nbsp;
+                    Column: <span class="text-italic text-normal">114</span>
+                </h4>
+                <br>
+                <pre>&lt;set-property propertyName=&quot;Content-Type&quot; value=&quot;application/json&quot; doc:name=&quot;Property&quot; /&gt;</pre>
+                <hr>
+            </div>
+            <div class="col-md-12">
+                <h4 class="text-bold">
+                    Line: <span class="text-italic text-normal">171</span>&nbsp;
+                    Column: <span class="text-italic text-normal">101</span>
+                </h4>
+                <br>
+                <pre>&lt;apikit:mapping statusCode=&quot;599&quot;&gt;
+    &lt;apikit:exception value=&quot;java.util.concurrent.TimeoutException&quot; /&gt;
+    &lt;message-properties-transformer doc:name=&quot;Message Properties&quot;&gt;
+        &lt;add-message-property key=&quot;Content-Type&quot; value=&quot;application/json&quot; /&gt;
+        &lt;add-message-property key=&quot;http.reason&quot; value=&quot;Internal Server Connect Timeout&quot; /&gt;
+    &lt;/message-properties-transformer&gt;
+    &lt;set-payload value=&quot;{ &amp;quot;status&amp;quot;: 599, &amp;quot;message&amp;quot;: &amp;quot;Internal Server Connect Timeout: #[org.mule.util.StringUtils.escape(exception.getCause().message)]&amp;quot;}&quot; doc:name=&quot;Set Payload&quot; /&gt;
+&lt;/apikit:mapping&gt;</pre>
+                <hr>
+            </div>
+            <div class="col-md-12">
+                <h4 class="text-bold">
+                    Line: <span class="text-italic text-normal">149</span>&nbsp;
+                    Column: <span class="text-italic text-normal">114</span>
+                </h4>
+                <br>
+                <pre>&lt;set-property propertyName=&quot;Content-Type&quot; value=&quot;application/json&quot; doc:name=&quot;Property&quot; /&gt;</pre>
+                <hr>
+            </div>
+            <div class="col-md-12">
+                <h4 class="text-bold">
+                    Line: <span class="text-italic text-normal">158</span>&nbsp;
+                    Column: <span class="text-italic text-normal">114</span>
+                </h4>
+                <br>
+                <pre>&lt;set-property propertyName=&quot;Content-Type&quot; value=&quot;application/json&quot; doc:name=&quot;Property&quot; /&gt;</pre>
+                <hr>
+            </div>
+            <div class="col-md-12">
+                <h4 class="text-bold">
+                    Line: <span class="text-italic text-normal">114</span>&nbsp;
+                    Column: <span class="text-italic text-normal">119</span>
+                </h4>
+                <br>
+                <pre>&lt;apikit:mapping statusCode=&quot;401&quot;&gt;
+    &lt;apikit:exception value=&quot;org.mule.module.apikit.exception.InvalidHeaderException&quot; /&gt;
+    &lt;apikit:exception value=&quot;org.mule.api.security.UnsupportedAuthenticationSchemeException&quot; /&gt;
+    &lt;apikit:exception value=&quot;org.mule.api.security.UnauthorisedException&quot; /&gt;
+    &lt;message-properties-transformer doc:name=&quot;Message Properties&quot;&gt;
+        &lt;add-message-property key=&quot;Content-Type&quot; value=&quot;application/json&quot; /&gt;
+        &lt;add-message-property key=&quot;http.reason&quot; value=&quot;Unauthorized&quot; /&gt;
+    &lt;/message-properties-transformer&gt;
+    &lt;set-payload value=&quot;{ &amp;quot;message&amp;quot;: &amp;quot;Unauthorized&amp;quot; }&quot; doc:name=&quot;Set Payload&quot; /&gt;
+&lt;/apikit:mapping&gt;</pre>
+                <hr>
+            </div>
+            <div class="col-md-12">
+                <h4 class="text-bold">
+                    Line: <span class="text-italic text-normal">165</span>&nbsp;
+                    Column: <span class="text-italic text-normal">83</span>
+                </h4>
+                <br>
+                <pre>&lt;apikit:mapping statusCode=&quot;500&quot;&gt;
+    &lt;apikit:exception value=&quot;java.lang.Exception&quot; /&gt;
+    &lt;message-properties-transformer doc:name=&quot;Message Properties&quot;&gt;
+        &lt;add-message-property key=&quot;Content-Type&quot; value=&quot;application/json&quot; /&gt;
+        &lt;add-message-property key=&quot;http.reason&quot; value=&quot;Internal Server Error&quot; /&gt;
+    &lt;/message-properties-transformer&gt;
+    &lt;set-payload value=&quot;{ &amp;quot;status&amp;quot;: 500, &amp;quot;message&amp;quot;: &amp;quot;Internal Server Error&amp;quot;}&quot; doc:name=&quot;Set Payload&quot; /&gt;
+&lt;/apikit:mapping&gt;</pre>
+                <hr>
+            </div>
+            <div class="col-md-12">
+                <h4 class="text-bold">
+                    Line: <span class="text-italic text-normal">131</span>&nbsp;
+                    Column: <span class="text-italic text-normal">114</span>
+                </h4>
+                <br>
+                <pre>&lt;set-property propertyName=&quot;Content-Type&quot; value=&quot;application/json&quot; doc:name=&quot;Property&quot; /&gt;</pre>
+                <hr>
+            </div>
+            <div class="col-md-12">
+                <h4 class="text-bold">
+                    Line: <span class="text-italic text-normal">122</span>&nbsp;
+                    Column: <span class="text-italic text-normal">114</span>
+                </h4>
+                <br>
+                <pre>&lt;set-property propertyName=&quot;Content-Type&quot; value=&quot;application/json&quot; doc:name=&quot;Property&quot; /&gt;</pre>
+                <hr>
+            </div>
+    </div>
+</body>
+</html>

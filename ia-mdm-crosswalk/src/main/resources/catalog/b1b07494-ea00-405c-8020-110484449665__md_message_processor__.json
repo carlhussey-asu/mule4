@@ -1,0 +1,25 @@
+{
+    "inputMessageMetadata": {},
+    "outputMessageMetadata": {
+        "flowVariables": {
+            "targetOrg": {
+                "connectorName": "#_custom_mule_metadata_type_#",
+                "typeId": "string"
+            },
+            "validTargetsString": {
+                "connectorName": "#_custom_mule_metadata_type_#",
+                "typeId": "string"
+            },
+            "targetOrgSize": {
+                "connectorName": "#_custom_mule_metadata_type_#",
+                "typeId": "int"
+            },
+            "errorMessage": {
+                "connectorName": "#_custom_mule_metadata_type_#",
+                "typeId": "errorJSON"
+            }
+        }
+    },
+    "id": "b1b07494-ea00-405c-8020-110484449665",
+    "version": "5.2.0.0"
+}
